@@ -19,6 +19,7 @@ use Iodev\Whois\Helpers\DomainHelper;
  * @property string[] $states
  * @property string $owner
  * @property string $registrar
+ * @property bool $restricted
  * @property string $dnssec
  */
 class TldInfo extends DataObject
