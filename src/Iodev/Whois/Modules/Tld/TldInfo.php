@@ -54,6 +54,7 @@ class TldInfo extends DataObject
         "owner" => "",
         "registrar" => "",
         "dnssec" => "",
+        "restricted" => false,
     ];
 
     /** @var TldResponse */
@@ -131,6 +132,7 @@ class TldInfo extends DataObject
             "expirationDate",
             "updatedDate",
             "registrar",
+            'restricted',
         ];
         return !$this->isEmpty($primaryKeys) && !$this->isEmpty($secondaryKeys);
     }
@@ -151,6 +153,7 @@ class TldInfo extends DataObject
             'registrar' => 3,
             'whoisServer' => 2,
             'dnssec' => 2,
+            'restricted' => 1,
         ];
         $sum = 0;
         foreach ($this->data as $k => $v) {

@@ -88,6 +88,7 @@ class CommonParser extends TldParser
     {
         $rootFilter = $this->filterFrom($response);
         $sel = $rootFilter->toSelector();
+
         $data = [
             "parserType" => $this->getType(),
 
@@ -140,6 +141,8 @@ class CommonParser extends TldParser
                 ->selectKeys($this->registrarKeys)
                 ->getFirst(''),
 
+            "restricted" => $response->getData()['text'],
+
             "states" => $sel->clean()
                 ->selectKeys($this->statesKeys)
                 ->mapStates()
@@ -147,11 +150,22 @@ class CommonParser extends TldParser
                 ->removeDuplicates()
                 ->getAll(),
         ];
+
+        $restricted = false;
+        if ($data['domainName'] === '') {
+            $restrictedText = $response->getData()['text'];
+            if(null !== $restrictedText) {
+                $restricted = strpos($restrictedText, 'domain is restricted') !== false;
+            }
+        }
+        $data['restricted'] = $restricted;
+
         $info = $this->createDomainInfo($response, $data, [
             'groups' => $rootFilter->getGroups(),
             'rootFilter' => $rootFilter,
         ]);
-        return $info->isValuable($this->notRegisteredStatesDict) ? $info : null;
+
+        return $restricted || $info->isValuable($this->notRegisteredStatesDict) ? $info : null;
     }
 
     /**
